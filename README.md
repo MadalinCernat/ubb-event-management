@@ -46,7 +46,35 @@ Default configuration:
 - Backend: `http://localhost:3001`
 - Frontend: `http://localhost:3000`
 
-## 4. Run the backend
+## 4. Initialize the database
+
+Run the committed migrations and load fictional development data:
+
+```bash
+cd backend
+npm run db:migrate:deploy
+npm run db:seed
+```
+
+The seed creates `manager@example.com` and `student@example.com` with the development password `password`. The authentication API will be implemented in a later task; these credentials prepare repeatable local data for it.
+
+During schema development, create a migration with:
+
+```bash
+cd backend
+npm run db:migrate -- --name describe_your_change
+```
+
+To recreate the local schema from migrations and run the seed again:
+
+```bash
+cd backend
+npm run db:reset
+```
+
+`db:reset` deletes local database data and must not be used against a shared or production database.
+
+## 5. Run the backend
 
 In one terminal:
 
@@ -61,7 +89,7 @@ The database connectivity endpoint is available at:
 http://localhost:3001/health/database
 ```
 
-## 5. Run the frontend
+## 6. Run the frontend
 
 In a second terminal:
 
@@ -83,6 +111,16 @@ Run commands from the relevant `frontend` or `backend` directory.
 | Build | `npm run build` | `npm run build` |
 | Unit tests | — | `npm test` |
 | End-to-end tests | — | `npm run test:e2e` |
+
+Backend database commands:
+
+| Task | Command |
+| --- | --- |
+| Generate Prisma client | `npm run db:generate` |
+| Create a development migration | `npm run db:migrate -- --name migration_name` |
+| Apply committed migrations | `npm run db:migrate:deploy` |
+| Load development data | `npm run db:seed` |
+| Reset the local database | `npm run db:reset` |
 
 Stop the database when it is no longer needed:
 

@@ -1,0 +1,98 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum MembershipRole {
+  MEMBER
+  MANAGER
+}
+
+enum EventStatus {
+  DRAFT
+  PUBLISHED
+  CANCELLED
+}
+
+enum RegistrationStatus {
+  ACTIVE
+  CANCELLED
+}
+
+model User {
+  id                   String         @id @default(uuid())
+  email                String         @unique
+  passwordHash         String
+  displayName          String
+  createdAt            DateTime       @default(now())
+  updatedAt            DateTime       @updatedAt
+  memberships          Membership[]
+  organizationsCreated Organization[] @relation("OrganizationCreator")
+  eventsCreated        Event[]        @relation("EventCreator")
+  registrations        Registration[]
+}
+
+model Organization {
+  id          String       @id @default(uuid())
+  name        String       @unique
+  description String
+  createdById String
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  createdBy   User         @relation("OrganizationCreator", fields: [createdById], references: [id], onDelete: Restrict)
+  memberships Membership[]
+  events      Event[]
+}
+
+model Membership {
+  id             String         @id @default(uuid())
+  userId         String
+  organizationId String
+  role           MembershipRole @default(MEMBER)
+  joinedAt       DateTime       @default(now())
+  user           User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  organization   Organization   @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, organizationId])
+  @@index([organizationId, role])
+}
+
+model Event {
+  id             String         @id @default(uuid())
+  organizationId String
+  title          String
+  description    String
+  location       String
+  startsAt       DateTime
+  endsAt         DateTime
+  capacity       Int
+  status         EventStatus    @default(DRAFT)
+  createdById    String
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+  organization   Organization   @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  createdBy      User           @relation("EventCreator", fields: [createdById], references: [id], onDelete: Restrict)
+  registrations  Registration[]
+
+  @@index([status, startsAt])
+  @@index([organizationId])
+}
+
+model Registration {
+  id           String             @id @default(uuid())
+  eventId      String
+  userId       String
+  status       RegistrationStatus @default(ACTIVE)
+  registeredAt DateTime           @default(now())
+  cancelledAt  DateTime?
+  updatedAt    DateTime           @updatedAt
+  event        Event              @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  user         User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([eventId, userId])
+  @@index([userId, status])
+  @@index([eventId, status])
+}
