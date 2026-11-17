@@ -90,6 +90,35 @@ export class EventsService {
     };
   }
 
+  // Managers see every event of their organization, including drafts and cancelled ones.
+  async listByOrganization(
+    organizationId: string,
+    userId: string,
+    query: ListEventsQueryDto,
+  ) {
+    await this.access.assertManager(userId, organizationId);
+
+    const where: Prisma.EventWhereInput = { organizationId };
+
+    const [total, events] = await Promise.all([
+      this.prisma.event.count({ where }),
+      this.prisma.event.findMany({
+        where,
+        include: eventInclude,
+        orderBy: [{ startsAt: 'asc' }, { id: 'asc' }],
+        skip: (query.page - 1) * query.pageSize,
+        take: query.pageSize,
+      }),
+    ]);
+
+    return {
+      items: events.map((event) => toView(event)),
+      total,
+      page: query.page,
+      pageSize: query.pageSize,
+    };
+  }
+
   async getById(id: string, userId?: string) {
     const event = await this.prisma.event.findUnique({
       where: { id },
