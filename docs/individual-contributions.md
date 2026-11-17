@@ -4,6 +4,10 @@ These declarations are based on the repository's issues, commits, pull requests,
 
 ## Botezatu Bianca
 
+### Owned workflow
+
+- Authenticate users, resolve organization membership and roles, and authorize protected organization and event actions.
+
 ### Owned or substantially contributed artifacts
 
 - User research and interview findings in `docs/user-research.md`.
@@ -47,6 +51,10 @@ Used OpenAI Codex to assist with structuring user-research findings and product 
 ---
 
 ## Cernat Mădălin
+
+### Owned workflow
+
+- Define and support event creation and publication through requirements, lifecycle rules, and the underlying event data model.
 
 ### Owned or substantially contributed artifacts
 
@@ -100,6 +108,10 @@ Complete this section from Mădălin's entries in [`genai-usage-report.md`](./ge
 ---
 
 ## Cernat Gabriel
+
+### Owned workflow
+
+- Discover published events, open event details, register or cancel registration, and verify the journey end to end.
 
 ### Owned or substantially contributed artifacts
 
