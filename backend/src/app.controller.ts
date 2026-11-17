@@ -1,7 +1,9 @@
 import { Controller, Get } from '@nestjs/common';
 import { AppService } from './app.service.js';
+import { Public } from './auth/public.decorator.js';
 import { DatabaseService } from './database/database.service.js';
 
+@Public()
 @Controller()
 export class AppController {
   constructor(
