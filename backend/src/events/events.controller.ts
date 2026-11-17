@@ -46,6 +46,23 @@ export class EventsController {
     return this.eventsService.getById(id, user?.id);
   }
 
+  @Get('organizations/:organizationId/events')
+  @ApiBearerAuth()
+  @ApiOperation({
+    summary:
+      "List all of an organization's events, including drafts and cancelled ones (managers only)",
+  })
+  @ApiResponse({ status: 200, description: 'Paginated events for the organization' })
+  @ApiResponse({ status: 401, description: 'Not authenticated' })
+  @ApiResponse({ status: 403, description: 'Caller is not a manager' })
+  listByOrganization(
+    @Param('organizationId', ParseUUIDPipe) organizationId: string,
+    @CurrentUser() user: AuthUser,
+    @Query() query: ListEventsQueryDto,
+  ) {
+    return this.eventsService.listByOrganization(organizationId, user.id, query);
+  }
+
   @Post('organizations/:organizationId/events')
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Create a draft event (managers only)' })

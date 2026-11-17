@@ -21,6 +21,7 @@ Base URL `http://localhost:3001`. Interactive documentation (Swagger UI): `/api/
 | `GET /auth/me` | user | Current user and organization memberships |
 | `POST /organizations` | user | Create organization; creator becomes manager (201) |
 | `POST /organizations/:organizationId/members` | manager | Add an existing user (by email) as `MEMBER` or `MANAGER` (201) |
+| `GET /organizations/:organizationId/events` | manager | List all of the organization's events (any status); query `page`, `pageSize` |
 | `POST /organizations/:organizationId/events` | manager | Create a draft event (201) |
 | `GET /events` | public | Published events; query `q`, `from`, `to`, `organizationId`, `page`, `pageSize` |
 | `GET /events/:id` | public | Published event details; drafts and cancelled events only for managers (404 otherwise) |

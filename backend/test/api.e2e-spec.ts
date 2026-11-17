@@ -23,6 +23,7 @@ describe('HTTP API contract (e2e)', () => {
   const organizations = { create: vi.fn(), addMember: vi.fn() };
   const events = {
     listPublished: vi.fn(),
+    listByOrganization: vi.fn(),
     getById: vi.fn(),
     create: vi.fn(),
     update: vi.fn(),
@@ -91,6 +92,7 @@ describe('HTTP API contract (e2e)', () => {
       ['post', `/events/${EVENT_ID}/cancel`],
       ['patch', `/events/${EVENT_ID}`],
       ['post', `/organizations/${ORG_ID}/events`],
+      ['get', `/organizations/${ORG_ID}/events`],
       ['post', `/organizations/${ORG_ID}/members`],
     ] as const)('protects %s %s', async (method, path) => {
       await request(app.getHttpServer())[method](path).expect(401);
@@ -199,6 +201,21 @@ describe('HTTP API contract (e2e)', () => {
         .expect(201);
 
       expect(events.create).toHaveBeenCalledWith(ORG_ID, 'user-1', body);
+    });
+
+    it('lists an organization events for the manager, passing the caller identity', async () => {
+      events.listByOrganization.mockResolvedValue({ items: [], total: 0, page: 1, pageSize: 20 });
+
+      await request(app.getHttpServer())
+        .get(`/organizations/${ORG_ID}/events`)
+        .set('Authorization', bearer)
+        .expect(200);
+
+      expect(events.listByOrganization).toHaveBeenCalledWith(
+        ORG_ID,
+        'user-1',
+        expect.objectContaining({ page: 1, pageSize: 20 }),
+      );
     });
 
     it('treats an event detail request as anonymous without a token and identified with one', async () => {

@@ -236,6 +236,40 @@ describe('EventsService.getById', () => {
   });
 });
 
+describe('EventsService.listByOrganization', () => {
+  it('lists every event of the organization for a manager, regardless of status', async () => {
+    const { prisma, access, service } = setup();
+    access.assertManager.mockResolvedValue(undefined);
+    prisma.event.count.mockResolvedValue(2);
+    prisma.event.findMany.mockResolvedValue([
+      eventRow({ status: EventStatus.DRAFT }),
+      eventRow({ id: 'e2', status: EventStatus.CANCELLED }),
+    ]);
+
+    const result = await service.listByOrganization('o1', 'u1', {
+      page: 1,
+      pageSize: 20,
+    });
+
+    expect(access.assertManager).toHaveBeenCalledWith('u1', 'o1');
+    const args = prisma.event.findMany.mock.calls[0][0];
+    expect(args.where).toEqual({ organizationId: 'o1' });
+    expect(args.where.status).toBeUndefined();
+    expect(result).toMatchObject({ total: 2, page: 1, pageSize: 20 });
+    expect(result.items).toHaveLength(2);
+  });
+
+  it('does not query events when the caller is not a manager', async () => {
+    const { prisma, access, service } = setup();
+    access.assertManager.mockRejectedValue(new ForbiddenException());
+
+    await expect(
+      service.listByOrganization('o1', 'u2', { page: 1, pageSize: 20 }),
+    ).rejects.toBeInstanceOf(ForbiddenException);
+    expect(prisma.event.findMany).not.toHaveBeenCalled();
+  });
+});
+
 describe('EventsService.listPublished', () => {
   it('lists only published events with pagination and filters', async () => {
     const { prisma, service } = setup();
