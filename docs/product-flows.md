@@ -3,7 +3,7 @@
 
 ## 1. Flows (consistent with the MVP scope)
 
-Scope reminders from `docs/requirements.md`: email + password auth; any authenticated user can create an organization and becomes its manager; event states `DRAFT`, `PUBLISHED`, `CANCELLED`; no waitlist, attendance, or notifications in the MVP.
+Scope reminders from `docs/technical-project-document.md`: email + password auth; any authenticated user can create an organization and becomes its manager; event states `DRAFT`, `PUBLISHED`, `CANCELLED`; no waitlist, attendance, or notifications in the MVP.
 
 ### 1.1 Authentication (FR-01, FR-02)
 

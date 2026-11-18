@@ -14,7 +14,7 @@ These declarations are based on the repository's issues, commits, pull requests,
 - Product flows, wireframes, accessibility, and usability notes in `docs/product-flows.md`.
 - Backend API documentation in `docs/api.md`.
 - Authentication architecture decision in `docs/adr/0001-authentication.md`.
-- Requirements-to-endpoint/test mapping in `docs/traceability.md`.
+- Requirements-to-endpoint/test mapping in `docs/technical-project-document.md`.
 
 ### Implemented functionality
 
@@ -60,7 +60,7 @@ Used OpenAI Codex to assist with structuring user-research findings and product 
 
 - Initial Next.js, NestJS, PostgreSQL, and repository setup.
 - Root README, environment examples, database startup instructions, and developer commands.
-- Mid-semester requirements in `docs/requirements.md`.
+- Mid-semester requirements in `docs/technical-project-document.md`.
 - Mid-semester issue/backlog preparation in Github Kanban board.
 - Prisma schema, SQL migration, seed data, Prisma configuration, and database provider integration.
 
